@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Calculatrice</title>
+		<link rel="stylesheet" href="index.css">
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1>Calculatrice</h1>
+			</header>
+
+			<section class="main">
+				<div class="resultat">
+					<div>
+						<input id="cadran" name="total" type="text" disabled="true" value="0" />
+						<div id="clear">
+							<span> X </span>
+						</div>
+					</div>
+				</div>
+				<div class="touches">
+					<div class="rowTouches">
+						   <button class="numButton"> 7 </button><!--
+						--><button class="numButton"> 8 </button><!--
+						--><button class="numButton"> 9 </button><!--
+						--><button class="opeButton"> + </button>
+					</div>
+					<div class="rowTouches">
+						   <button class="numButton"> 4 </button><!--
+						--><button class="numButton"> 5 </button><!--
+						--><button class="numButton"> 6 </button><!--
+						--><button class="opeButton"> - </button>
+					</div>
+					<div class="rowTouches">
+						   <button class="numButton"> 1 </button><!--
+						--><button class="numButton"> 2 </button><!--
+						--><button class="numButton"> 3 </button><!--
+						--><button class="opeButton"> / </button>
+					</div>
+					<div class="rowTouches">
+						   <button class="numButton"> 0 </button><!--
+						--><button class="numButton"> . </button><!--
+						--><button class="egualButton"> = </button><!--
+						--><button class="opeButton"> x </button>
+
+					</div>
+				</div>
+			</section>
+			<footer>
+				design by Jérémy Boutel
+			</footer>
+		</div>
+		<script>
+
+			var Calculatrice = function(){
+				const INIT_MAX_NUMBER = 15;
+				const MAX_NUMBER = 15;
+
+				var currentNumber = 0;
+				var resultat = 0;
+				var currentOpe = null;
+				var lastEventIsOpe = false;
+
+				var numbers 	= document.getElementsByClassName("numButton");
+				var operateurs 	= document.getElementsByClassName("opeButton");
+				var egualButton 	= document.getElementsByClassName("egualButton")[0];
+				var clearButton 	= document.getElementById("clear");
+
+				this.init = function(){
+					for(var i = 0 ; i < numbers.length ; i++)
+					{
+						numbers[i].addEventListener("click", addNumbers,false);
+					}
+					for(var i = 0 ; i < operateurs.length ; i++)
+					{
+						operateurs[i].addEventListener("click", makeOperation,false);
+					}
+
+					clearButton.addEventListener("click", resetCalcul,false);
+					egualButton.addEventListener("click", calculateResultat,false);
+
+					updateCurrentNumber();
+				}
+
+				function resetCalcul(event)
+				{
+					console.log("resetCalcul : resultat = " + resultat + " ;currentNumber = " + currentNumber);
+					currentNumber = resultat = 0;
+					updateCurrentNumber();
+				}
+
+				// make calcul and replace the current number by the result
+				function calculateResultat(event)
+				{
+					console.log("calculateResultat : nb1 = " + resultat + " ;nb2 = " + currentNumber  + " ;ope = " + currentOpe);
+					switch(currentOpe){
+						case "x" :  resultat = parseFloat(resultat) * parseFloat(currentNumber); break;
+						case "/" :  resultat = (parseFloat(currentNumber) == 0)? 0 : parseFloat(resultat) / parseFloat(currentNumber); break;// div by 0 is impossible
+						case "-" :  resultat = parseFloat(resultat) - parseFloat(currentNumber); break;
+						case "+" :  resultat = parseFloat(resultat) + parseFloat(currentNumber); break;
+						case null:  resultat = 0; break;
+						default: console.log(currentOpe + " non reconnu PROBLEME");
+					}
+					console.log("   => Calcul : " + resultat);
+					
+					currentNumber = resultat;
+					currentOpe = null;
+					updateCurrentNumber();
+					lastEventIsOpe = true;
+				}
+
+				// add number to complete the currentNumber
+				function addNumbers(event)
+				{				
+					console.log("addNumber : click sur " , event.target.innerText);
+					// put back to 0 if we insert the second number
+					if(lastEventIsOpe)
+						currentNumber = 0;
+
+					// replace if current is 0 or add if not
+					if(currentNumber == 0)
+						currentNumber = event.target.innerText;
+					else
+						currentNumber = currentNumber.toString() + event.target.innerText;
+
+					updateCurrentNumber();
+					lastEventIsOpe = false;
+				}
+
+				// stock in resultat the currentNumber an ask for the operation to do with the next number 
+				function makeOperation(event)
+				{
+					console.log("makeOperation : click sur " , event.target.innerText);
+					// if ther is already a current operation running with a second number, we simulate the egual button push
+					if(currentOpe != null && !lastEventIsOpe)
+						calculateResultat(null);
+
+					currentOpe = event.target.innerText;
+					resultat = currentNumber;
+					lastEventIsOpe = true;
+
+				}
+
+				// update GUI input for current number 
+				function updateCurrentNumber(){
+					var numberLetter = currentNumber.length;
+
+					if(numberLetter >= INIT_MAX_NUMBER){
+							document.getElementById("cadran").style.fontSize = (28 - (numberLetter - INIT_MAX_NUMBER)) + "px";
+					}
+					else
+						document.getElementById("cadran").style.fontSize = "28px";
+					if(numberLetter >= MAX_NUMBER)
+							document.getElementById("cadran").value = "" + parseFloat(currentNumber).toExponential();
+					
+					else
+						document.getElementById("cadran").value = "" + currentNumber;
+				}
+			}
+
+			var calc = new Calculatrice(document);
+			calc.init()
+
+		</script>
+	</body>
+</html>
