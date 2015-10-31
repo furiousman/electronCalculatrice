@@ -81,6 +81,10 @@
 					clearButton.addEventListener("click", resetCalcul,false);
 					egualButton.addEventListener("click", calculateResultat,false);
 
+					//touches
+					document.addEventListener("keypress", RouteKeyPress);
+
+
 					updateCurrentNumber();
 				}
 
@@ -157,6 +161,20 @@
 					
 					else
 						document.getElementById("cadran").value = "" + currentNumber;
+				}
+
+				function RouteKeyPress(event){
+					var fakeEvent = {};
+					fakeEvent.target = {};
+					var touche = String.fromCharCode(event.charCode);
+					fakeEvent.target.innerText = touche;
+
+					if(parseInt(touche) != NaN && parseInt(touche)>= 0 )
+						addNumbers(fakeEvent);
+					else if(touche == "=" || event.charCode == 13)
+							calculateResultat(fakeEvent);
+					else if(touche.match( /(\+|\-|\x|\/)/ ))
+						makeOperation(fakeEvent);
 				}
 			}
 
