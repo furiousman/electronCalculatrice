@@ -1,29 +1,7 @@
-# test
+# electronCalculatrice
+fast project to learn electron (making calculator)
 
-> My epic app
-
-
-## Dev
-
-```
-$ npm install
-```
-
-### Run
-
-```
-$ npm start
-```
-
-### Build
-
-```
-$ npm run build
-```
-
-Builds the app for OS X, Linux, and Windows, using [electron-packager](https://github.com/maxogden/electron-packager).
-
-
-## License
-
-MIT © [](http://jeremyboutel.ovh)
+To launch app 
+just clone this
+npm install
+./node_modules/.bin/electron ./
